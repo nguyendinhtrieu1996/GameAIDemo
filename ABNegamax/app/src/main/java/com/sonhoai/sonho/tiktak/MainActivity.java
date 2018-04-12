@@ -10,8 +10,8 @@ import android.widget.ImageView;
 public class MainActivity extends AppCompatActivity {
     private ImageView img;
     private ChessBoard chessBoard;
-    private int colQty = 4;
-    private int rowQty = 4;
+    private int colQty = 5;
+    private int rowQty = 5;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -34,9 +34,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     if (!ChessBoard.isGameOver) {
-                        return chessBoard.negaABMovee(view, motionEvent);
+                        return chessBoard.negaABMove(view, motionEvent);
                     }
                 }
+
                 return true;
             }
         });

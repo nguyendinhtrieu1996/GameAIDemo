@@ -9,8 +9,13 @@ import android.util.Log;
 public class Minimax {
 
     public static int index = 0;
+    private ChessBoard chessBoard;
 
-    public Record minimaxRecode(ChessBoard chessBoard,int currentDept, int maxDept, int alpha, int beta) {
+    public Minimax(ChessBoard chessBoard) {
+        this.chessBoard = chessBoard;
+    }
+
+    public Record minimaxRecode(int currentDept, int maxDept, int alpha, int beta) {
         Move bestMove=null;//
         int bestScore;
 
@@ -24,38 +29,39 @@ public class Minimax {
         bestScore = Integer.MIN_VALUE;
 
         for(Move move:chessBoard.getMove()){
-            ChessBoard newChess = new ChessBoard(chessBoard.getContext(),chessBoard.getBitmapWidth(), chessBoard.getBitmapHeight(),chessBoard.getColQty(),chessBoard.getRowQty());
-            newChess.initBoard2();
-            newChess.setBoard(chessBoard.getNewBoard());
-            newChess.setPlayer(chessBoard.getPlayer());
-
-            newChess.makeMove(move);
-            Record record;
-
-            record = minimaxRecode(
-                        newChess,
+            chessBoard.makeMove(move);
+            Record record = minimaxRecode(
                         currentDept++,
                         maxDept,
                         -beta,
-                        -Math.max(alpha, bestScore)
+                        -alpha
                 );
 
 
             int currentScore = -record.getScore();
+            chessBoard.removeMove(move);
+            chessBoard.resetWinner();
 
-//            if (record.getScore() >= beta && !newChess.over) {
-//                newChess.over = false;
-//                return new Record(bestMove, currentScore);
-//            }
+            alpha = Math.max(alpha, currentScore);
 
             if(currentScore > bestScore) {
-                newChess.over = false;
                 bestScore = currentScore;
                 bestMove = move;
             }
+
+            if (currentScore >= beta || alpha >= beta) {
+                return new Record(bestMove, bestScore);
+            }
+
         }
 
         return new Record(bestMove, bestScore);
     }
 
 }
+
+
+
+
+
+

@@ -35,6 +35,7 @@ public class ChessBoard {
     private Move previousMove;
     private int winner;
     public static boolean isGameOver = false;
+    public int checkedCount;
     public Boolean over = false;
 
     private Bitmap playerA, playerB;
@@ -59,9 +60,10 @@ public class ChessBoard {
     }
 
     public void init() {
+        isGameOver = false;
+        checkedCount = 0;
         winner = -1;
         previousMove = null;
-        minimax = new Minimax();
         lines = new ArrayList<>();
         bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
         canvas = new Canvas(bitmap);
@@ -110,7 +112,7 @@ public class ChessBoard {
         return bitmap;
     }
 
-    public boolean negaABMovee(final View view, MotionEvent motionEvent) {
+    public boolean negaABMove(final View view, MotionEvent motionEvent) {
         if (winner == 0 || winner == 1) {
             return true;
         }
@@ -123,8 +125,10 @@ public class ChessBoard {
         int count = getCurrentDept();
         final int currentDetp = rowQty*colQty - count;
 
+
+        minimax = new Minimax(this);
+
         Record record = minimax.minimaxRecode(
-                ChessBoard.this,
                 currentDetp,
                 rowQty * colQty,
                 Integer.MIN_VALUE,
@@ -209,14 +213,7 @@ public class ChessBoard {
             return true;
         }
 
-        int count = 0;
-        for (int i = 0; i < rowQty; i++) {
-            for (int j = 0; j < colQty; j++) {
-                if (board[i][j] == -1) count++;
-            }
-        }
-        if (count == 0){
-            winner = -1;
+        if (checkedCount == rowQty * colQty) {
             return true;
         }
 
@@ -344,6 +341,7 @@ public class ChessBoard {
     }
 
     public void makeMove(Move move) {
+        checkedCount++;
         previousMove = move;
         board[move.getRowIndex()][move.getColIndex()] = player;
         player = (player + 1) % 2;
@@ -371,6 +369,18 @@ public class ChessBoard {
         }
         return newBoard;
     }
+
+    public void resetWinner() {
+        winner = -1;
+    }
+
+    public void removeMove(Move move) {
+        board[move.getRowIndex()][move.getColIndex()] = -1;
+        checkedCount--;
+        player = (player + 1) % 2;
+    }
+
+
     public int getPlayer() {
         return player;
     }
