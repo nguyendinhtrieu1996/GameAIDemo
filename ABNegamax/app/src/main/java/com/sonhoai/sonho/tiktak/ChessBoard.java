@@ -35,6 +35,7 @@ public class ChessBoard {
     private Move previousMove;
     private int winner;
     public static boolean isGameOver = false;
+    public Boolean over = false;
 
     private Bitmap playerA, playerB;
 
@@ -130,6 +131,11 @@ public class ChessBoard {
                 Integer.MAX_VALUE
         );
 
+        if (record.getMove() == null) {
+            Log.d("++++ record", "null");
+            return true;
+        }
+
         onDrawBoard(record.getMove().getRowIndex(), record.getMove().getColIndex() , cellWidth, cellHeight);
 
         makeMove(record.getMove());
@@ -156,10 +162,6 @@ public class ChessBoard {
         final int rowIndex = (int) (motionEvent.getY() / (view.getHeight() / rowQty));
 
         if(board[rowIndex][colIndex] != -1){
-            return true;
-        }
-
-        if (winner == 0 || winner == 1) {
             return true;
         }
 
@@ -347,10 +349,6 @@ public class ChessBoard {
         player = (player + 1) % 2;
     }
 
-    //0 -1 1: quan sát trên ngườu chơi hiện tại
-    //0 hoà
-    //1 người chơi hiện tại thắng
-    //winner: -1, 1, 0
     public int evaluate() {
         if (winner == -1) {
             return 0;

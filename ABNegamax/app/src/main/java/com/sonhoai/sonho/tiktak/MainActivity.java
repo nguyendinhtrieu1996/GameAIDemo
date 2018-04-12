@@ -10,8 +10,8 @@ import android.widget.ImageView;
 public class MainActivity extends AppCompatActivity {
     private ImageView img;
     private ChessBoard chessBoard;
-    private int colQty = 3;
-    private int rowQty = 3;
+    private int colQty = 4;
+    private int rowQty = 4;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -29,7 +29,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    return chessBoard.onTouch(view, motionEvent);
+                    if (!ChessBoard.isGameOver) {
+                        return chessBoard.onTouch(view, motionEvent);
+                    }
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     if (!ChessBoard.isGameOver) {
                         return chessBoard.negaABMovee(view, motionEvent);
